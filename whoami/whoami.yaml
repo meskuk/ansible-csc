@@ -1,0 +1,30 @@
+---
+- hosts: local
+  become: yes
+
+  tasks:
+  # TODO: Using Ansible to manage a temp file is far better,
+  # I'm just rushing based on time 
+  - name: Download whoami binary
+    ansible.builtin.get_url:
+      url: https://github.com/traefik/whoami/releases/download/v1.11.0/whoami_v1.11.0_linux_amd64.tar.gz
+      dest: /tmp/whoami.tar.gz
+
+  - name: Install whoami binary
+    ansible.builtin.unarchive:
+      src: /tmp/whoami.tar.gz
+      dest: /usr/local/bin/
+      include: 
+      - whoami
+      mode: "0755"
+
+  - name: Add whoami user
+    ansible.builtin.user:
+      name: whoami
+      comment: Traefik whoami service user
+      system: true
+
+  - name: Add Supervisor config
+    ansible.builtin.copy:
+      src: whoami.conf
+      dest: /etc/supervisor/conf.d/whoami.conf

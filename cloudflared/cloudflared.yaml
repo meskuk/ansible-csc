@@ -1,0 +1,32 @@
+---
+- hosts: local
+  become: yes
+
+  tasks:
+  - name: Ensure keyring directory exists
+    ansible.builtin.file:
+      path: /usr/share/keyrings
+      mode: "0755"
+      state: directory
+
+  - name: Add Cloudflare GPG key
+    ansible.builtin.get_url:
+      url: https://pkg.cloudflare.com/cloudflare-public-v2.gpg
+      dest: /usr/share/keyrings/cloudflare-public-v2.gpg
+  
+  # Note: while I did copy from the official install instructions, the filename of the repo entry
+  # will not be the same!
+  - name: Add Cloudflare repo
+    ansible.builtin.apt_repository:
+      repo: "deb [signed-by=/usr/share/keyrings/cloudflare-public-v2.gpg] https://pkg.cloudflare.com/cloudflared any main"
+      state: present
+
+  - name: Update repositories and install cloudflared
+    ansible.builtin.apt:
+      name: cloudflared
+      update_cache: yes
+
+  - name: Add Supervisor config
+    ansible.builtin.copy:
+      src: cloudflared.conf
+      dest: /etc/supervisor/conf.d/cloudflared.conf
