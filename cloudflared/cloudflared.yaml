@@ -9,7 +9,6 @@
       path: /usr/share/keyrings
       mode: "0755"
       state: directory
-
   - name: Add Cloudflare GPG key
     ansible.builtin.get_url:
       url: https://pkg.cloudflare.com/cloudflare-public-v2.gpg
@@ -32,6 +31,23 @@
       name: cloudflared
       comment: Cloudflare Tunnel service user
       system: true
+
+  - name: Create Cloudflared directory
+    ansible.builtin.file:
+      path: /etc/cloudflared
+      owner: cloudflared
+      group: cloudflared
+      mode: "0700"
+      state: directory
+
+  - name: Create Cloudflared token file
+    ansible.builtin.template:
+      src: 
+      dest: /etc/cloudflared/token
+      owner: cloudflared
+      group: cloudflared
+      mode: "0600"
+      state: directory
 
   - name: Add Supervisor config
     ansible.builtin.copy:
