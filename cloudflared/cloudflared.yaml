@@ -27,6 +27,12 @@
       name: cloudflared
       update_cache: yes
 
+  - name: Add cloudflared user
+    ansible.builtin.user:
+      name: cloudflared
+      comment: Cloudflare Tunnel service user
+      system: true
+
   - name: Add Supervisor config
     ansible.builtin.copy:
       src: cloudflared.conf
