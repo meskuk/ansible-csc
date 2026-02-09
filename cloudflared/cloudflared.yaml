@@ -47,7 +47,6 @@
       owner: cloudflared
       group: cloudflared
       mode: "0600"
-      state: directory
 
   - name: Add Supervisor config
     ansible.builtin.copy:
