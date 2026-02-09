@@ -15,12 +15,12 @@
   - name: Download whoami binary
     ansible.builtin.get_url:
       url: https://github.com/traefik/whoami/releases/download/v1.11.0/whoami_v1.11.0_linux_amd64.tar.gz
-      dest: "{{ tempdir }}/whoami.tar.gz"
+      dest: "{{ tempdir.path }}/whoami.tar.gz"
 
   - name: Extract whoami tarball
     ansible.builtin.unarchive:
-      src: "{{ tempdir }}/whoami.tar.gz"
-      dest: "{{ tempdir }}"
+      src: "{{ tempdir.path }}/whoami.tar.gz"
+      dest: "{{ tempdir.path }}"
       include: 
       - whoami
 
