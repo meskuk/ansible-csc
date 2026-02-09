@@ -42,7 +42,7 @@
 
   - name: Create Cloudflared token file
     ansible.builtin.template:
-      src: 
+      src: token.j2
       dest: /etc/cloudflared/token
       owner: cloudflared
       group: cloudflared
