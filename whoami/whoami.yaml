@@ -4,18 +4,20 @@
   become: yes
 
   tasks:
-  # TODO: Using Ansible to manage a temp file is far better,
-  # I'm just rushing based on time 
-
   - name: Create tempdir
     ansible.builtin.tempfile:
       state: directory
     register: tempdir
 
-  - name: Download whoami binary
+  - name: Download whoami tarball
     ansible.builtin.get_url:
       url: https://github.com/traefik/whoami/releases/download/v1.11.0/whoami_v1.11.0_linux_amd64.tar.gz
       dest: "{{ tempdir.path }}/whoami.tar.gz"
+
+  - name: Set tempdir permissions
+    ansible.builtin.file:
+      path: "{{ tempdir.path }}"
+      mode: "0755"
 
   - name: Extract whoami tarball
     ansible.builtin.unarchive:
@@ -23,7 +25,7 @@
       dest: "{{ tempdir.path }}"
       include: 
       - whoami
-
+  
   - name: Install binary
     ansible.builtin.copy:
       src: "{{ tempdir.path }}/whoami"
